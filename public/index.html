@@ -348,12 +348,17 @@
       // Header controls
       btnOpenLogin.hidden = !!user;
       userInfoEl.hidden   = !user;
-      if (user) userEmailEl.textContent = user.email;
+      if (user) {
+        userEmailEl.textContent = user.email;
+        closeLoginModal();
+      }
 
       // Dashboard guard
-      const isAdmin = user && user.email; // Full rule enforcement is in Firestore rules
+      const isAdmin = Boolean(user && user.email);
       dashboardContent.hidden = !isAdmin;
-      dashboardGuard.hidden   = !!isAdmin;
+      dashboardGuard.hidden   = isAdmin;
+      dashboardContent.style.display = isAdmin ? "block" : "none";
+      dashboardGuard.style.display   = isAdmin ? "none" : "block";
 
       if (isAdmin && !dashboardInitialized) {
         initDashboard();
@@ -375,10 +380,12 @@
 
     function openLoginModal() {
       loginModal.hidden = false;
+      loginModal.style.display = "flex";
       document.getElementById("login-email").focus();
     }
     function closeLoginModal() {
       loginModal.hidden = true;
+      loginModal.style.display = "none";
       loginError.hidden = true;
       loginForm.reset();
     }

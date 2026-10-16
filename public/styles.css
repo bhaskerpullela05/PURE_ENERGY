@@ -672,3 +672,66 @@ img { max-width: 100%; display: block; }
 ::-webkit-scrollbar-track       { background: var(--clr-surface); }
 ::-webkit-scrollbar-thumb       { background: var(--clr-border-hover); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--clr-text-subtle); }
+
+/* ─── 22. Modal Overlay & Dialog ──────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(13, 17, 23, 0.85);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+}
+
+.modal-overlay[hidden] {
+  display: none !important;
+}
+
+.modal-card {
+  position: relative;
+  background: var(--clr-surface-2);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6);
+  animation: slideUp 0.25s ease-out;
+}
+
+.modal-close {
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--clr-text-muted);
+  cursor: pointer;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  transition: color var(--t-fast);
+}
+.modal-close:hover {
+  color: var(--clr-text);
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--clr-text);
+  margin-bottom: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.modal-subtitle {
+  font-size: 0.85rem;
+  color: var(--clr-text-muted);
+  margin-bottom: var(--space-5);
+}
