@@ -35,10 +35,21 @@ const filters = { dealer: "", status: "", search: "" };
 export function initDashboard() {
   setupFilterListeners();
 
-  unsubscribeFn = subscribeToLeads((leads) => {
-    allLeads = leads;
-    render();
-  });
+  unsubscribeFn = subscribeToLeads(
+    (leads) => {
+      allLeads = leads;
+      const errEl = document.getElementById("dashboard-error");
+      if (errEl) errEl.hidden = true;
+      render();
+    },
+    (err) => {
+      const errEl = document.getElementById("dashboard-error");
+      if (errEl) {
+        errEl.textContent = "Database notice: " + (err.message || "Unable to load leads.");
+        errEl.hidden = false;
+      }
+    }
+  );
 }
 
 /**

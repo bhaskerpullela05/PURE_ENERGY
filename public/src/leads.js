@@ -150,10 +150,17 @@ export async function fetchAllLeads() {
  * @param {function} callback - Called with an array of lead objects.
  * @returns {function} Unsubscribe function.
  */
-export function subscribeToLeads(callback) {
+export function subscribeToLeads(callback, onError) {
   const q = query(leadsCol, orderBy("createdOn", "desc"));
-  return onSnapshot(q, (snap) => {
-    const leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    callback(leads);
-  });
+  return onSnapshot(
+    q,
+    (snap) => {
+      const leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      callback(leads);
+    },
+    (err) => {
+      console.error("Firestore onSnapshot error:", err);
+      if (onError) onError(err);
+    }
+  );
 }

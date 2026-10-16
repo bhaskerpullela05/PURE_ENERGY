@@ -405,7 +405,8 @@
         closeLoginModal();
         showSection("dashboard");
       } catch (err) {
-        loginError.textContent = friendlyAuthError(err.code);
+        console.error("Firebase Sign In error:", err);
+        loginError.textContent = friendlyAuthError(err.code || err.message);
         loginError.hidden = false;
       } finally {
         setButtonLoading(btnLogin, false);
@@ -527,13 +528,15 @@
 
     function friendlyAuthError(code) {
       const map = {
-        "auth/wrong-password":       "Incorrect password. Please try again.",
-        "auth/user-not-found":       "No account found with that email.",
-        "auth/invalid-email":        "Please enter a valid email address.",
-        "auth/too-many-requests":    "Too many failed attempts. Try again later.",
-        "auth/invalid-credential":   "Invalid credentials. Check email and password."
+        "auth/wrong-password":            "Incorrect password. Please try again.",
+        "auth/user-not-found":            "No account found with this email. Please add this user in Firebase Console.",
+        "auth/invalid-email":             "Please enter a valid email address.",
+        "auth/too-many-requests":         "Too many failed attempts. Try again later.",
+        "auth/invalid-credential":        "Invalid email or password. Please verify the credentials or create the user in Firebase Console → Authentication → Users.",
+        "auth/invalid-login-credentials": "Invalid email or password. Please verify the credentials or create the user in Firebase Console → Authentication → Users.",
+        "auth/network-request-failed":    "Network error. Please check your internet connection."
       };
-      return map[code] ?? "Sign in failed. Please try again.";
+      return map[code] ?? `Sign in failed (${code ?? "check credentials"}).`;
     }
   </script>
 
