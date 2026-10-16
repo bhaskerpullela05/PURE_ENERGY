@@ -1,0 +1,41 @@
+lead_id,name,phone,pincode,product,source,created_on,status
+L1001,Ravi Kumar,9447712782,502285,PuREPower Home 5kWh,Website,2026-09-03,New
+L1002,Lakshmi Devi,9492655486,521137,PuREPower Home 3kWh,Voice Agent,2026-09-02,New
+L1003,Suresh Reddy,9565623510,530016,PuREPower Home 3kWh,Voice Agent,2026-09-03,Lost
+L1004,Anitha Rao,98480 22 431,502319,PuREPower Commercial 10kWh,Website,2026-09-08,New
+L1005,Mahesh Goud,9719659571,521137,PuREPower Home 5kWh,Website,2026-09-08,New
+L1006,Swathi K,+91-9000012345,502319,PuREPower Home 3kWh,Dealer Walk-in,2026-09-14,Contacted
+L1007,Prakash N,9680557051,500081,PuREPower Commercial 10kWh,Dealer Walk-in,2026-09-18,Contacted
+L1008,Kavitha M,9210655224,521137,PuREPower Commercial 10kWh,Voice Agent,2026-09-12,New
+L1009,Venkatesh B,12345,517501,PuREPower Home 3kWh,Website,2026-09-20,Contacted
+L1010,Sridevi P,9633021001,522002,PuREPower Commercial 10kWh,WhatsApp,2026-09-25,Converted
+L1011,Naresh Yadav,9599936196,521137,PuREPower Home 5kWh,Dealer Walk-in,2026-09-10,Contacted
+L1012,Padma S,9952958473,5000,PuREPower Commercial 10kWh,Voice Agent,2026-09-03,Converted
+L1013,Kiran Kumar,9663925448,531001,PuREPower Home 5kWh,WhatsApp,2026-09-10,New
+L1014,Bhavani T,9226772164,520010,PuREPower Home 5kWh,Voice Agent,2026-09-25,Converted
+L1015,Rajesh Varma,9263192149,110001,PuREPower Home 5kWh,Website,2026-09-22,New
+L1016,Sunitha G,9920951719,520010,PuREPower Commercial 10kWh,Dealer Walk-in,2026-09-11,Converted
+L1017,Harish Chandra,9738199795,531001,PuREPower Commercial 10kWh,WhatsApp,2026-09-03,New
+L1018,Madhavi L,9389845088,531001,PuREPower Commercial 10kWh,Website,31/09/2026,Converted
+L1019,Srinivas Rao,9794849312,521137,PuREPower Commercial 10kWh,WhatsApp,2026-09-10,Lost
+L1020,Jyothi R,9817960391,505001,PuREPower Home 3kWh,WhatsApp,2026-09-12,converted 
+L1021,Ramesh Babu,9755969870,500081,PuREPower Home 5kWh,Website,2026-09-07,Converted
+L1022,Divya Sree,9238878003,517501,PuREPower Home 3kWh,WhatsApp,2026-09-13,Lost
+L1023,Anil Kumar,9186523513,502285,Pure power 5 kwh,WhatsApp,2026-09-18,Converted
+L1024,Saritha V,9247023327,502319,PuREPower Home 5kWh,Dealer Walk-in,2026-09-23,Lost
+L1025,Gopal Krishna,9485227600,522002,PuREPower Home 5kWh,Voice Agent,2026-09-05,New
+L1026,,9289212348,502285,PuREPower Home 3kWh,Voice Agent,2026-09-01,Lost
+L1027,Vamsi Krishna,9992379915,521137,PuREPower Home 3kWh,Dealer Walk-in,2026-09-10,New
+L1028,Hema Latha,9256418835,530016,PuREPower Commercial 10kWh,website,2026-09-20,Converted
+L1029,Chandra Sekhar,9234745481,517501,PuREPower Commercial 10kWh,Website,2026-09-15,Lost
+L1030,Rekha N,9527424008,530016,PuREPower Home 5kWh,Website,2026-09-16,Lost
+L1031,Satish P,9166838090,502032,PuREPower Home 3kWh,Voice Agent,2026-09-15,Contacted
+L1032,Pavani D,9218034622,505001,PuREPower Commercial 10kWh,Website,2026-09-04,New
+L1033,Mohan Rao,9708579269,502285,PuREPower Commercial 10kWh,Website,2026-09-12,New
+L1034,Lavanya K,9175500775,502319,PuREPower Home 3kWh,WhatsApp,2026-09-05,Converted
+L1035,Shankar G,9473006684,521137,PuREPower Home 5kWh,WhatsApp,2026-09-04,New
+L1036,Suresh Reddy,9565623510,530016,PuREPower Home 3kWh,Voice Agent,2026-09-28,Lost
+L1037,Sridevi P,+91 9633021001,522002,PuREPower Commercial 10kWh,WhatsApp,2026-09-25,Converted
+L1038,SATISH P,9166838090,502032,PuREPower Home 3kWh,Voice Agent,2026-09-15,Contacted
+L1039,Prakash N,9680557051,500081,PuREPower Commercial 10kWh,Dealer Walk-in,2026-09-18,Contacted
+L1033,Kiran Kumar,9663925448,531001,PuREPower Home 5kWh,WhatsApp,2026-09-10,New

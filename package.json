@@ -1,0 +1,19 @@
+{
+  "name": "dealer-lead-router",
+  "version": "1.0.0",
+  "description": "PURE Energy Dealer Lead Router - MIS Assistant Assignment",
+  "scripts": {
+    "start": "firebase serve --only hosting",
+    "deploy": "firebase deploy --only hosting",
+    "test": "node tests/test_validation.js"
+  },
+  "devDependencies": {
+    "firebase-tools": "^13.0.0"
+  },
+  "dependencies": {
+    "firebase": "^10.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

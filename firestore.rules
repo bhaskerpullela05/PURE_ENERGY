@@ -1,0 +1,106 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── Helper functions ────────────────────────────────────────────────────
+
+    // Returns true only when the calling user is signed-in via Firebase Auth.
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Returns true when the calling user has the custom claim "role" == "admin".
+    // This claim must be set server-side via the Firebase Admin SDK.
+    // See README.md → Authentication Setup for provisioning instructions.
+    function isAdmin() {
+      return isSignedIn() && request.auth.token.role == 'admin';
+    }
+
+    // Validates a lead status value.
+    function isValidStatus(s) {
+      return s in ['New', 'Contacted', 'Converted', 'Lost'];
+    }
+
+    // Validates a lead source value.
+    function isValidSource(s) {
+      return s in [
+        'Website',
+        'AI Voice Call',
+        'WhatsApp',
+        'Dealer Walk-in',
+        'Voice Agent'
+      ];
+    }
+
+    // ─── leads collection ────────────────────────────────────────────────────
+    match /leads/{leadId} {
+
+      // Any authenticated user (admin) can read leads.
+      // Public visitors cannot read customer data.
+      allow read: if isAdmin();
+
+      // CREATE: Allow authenticated users to create a lead if:
+      //   • All required fields are present
+      //   • status is valid
+      //   • source is valid
+      //   • mobile is a non-empty string (10-digit enforcement done in app)
+      //   • pincode is a non-empty string
+      // Note: The document ID is derived from the mobile number to enforce
+      //       uniqueness at the database level (see leads.js for details).
+      allow create: if isSignedIn()
+        && request.resource.data.keys().hasAll([
+            'name', 'mobile', 'pincode', 'product', 'source',
+            'dealer', 'status', 'createdOn', 'updatedOn'
+           ])
+        && isValidStatus(request.resource.data.status)
+        && isValidSource(request.resource.data.source)
+        && request.resource.data.mobile is string
+        && request.resource.data.mobile.size() > 0
+        && request.resource.data.pincode is string
+        && request.resource.data.pincode.size() > 0
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0;
+
+      // UPDATE: Only admins may update.
+      // They may change status (and updatedOn) but NOT protected fields.
+      allow update: if isAdmin()
+        && isValidStatus(request.resource.data.status)
+        // Prevent changing protected fields
+        && request.resource.data.mobile    == resource.data.mobile
+        && request.resource.data.pincode   == resource.data.pincode
+        && request.resource.data.name      == resource.data.name
+        && request.resource.data.dealer    == resource.data.dealer
+        && request.resource.data.createdOn == resource.data.createdOn;
+
+      // DELETE: Only admins may delete leads (not needed by current UI).
+      allow delete: if isAdmin();
+    }
+
+    // ─── mobile_index collection ─────────────────────────────────────────────
+    // This collection stores one document per normalized mobile number.
+    // Document ID = normalized mobile number.
+    // It exists solely to enforce uniqueness before creating a lead.
+    // Clients must NOT be allowed to write here freely.
+    match /mobile_index/{mobile} {
+      // Only admins (or the trusted import script via Admin SDK) may read the index.
+      allow read: if isAdmin();
+
+      // Clients may create an index entry ONLY when creating their own lead
+      // and only when the document does not already exist.
+      // The document ID must match the mobile field in the document.
+      allow create: if isSignedIn()
+        && request.resource.data.keys().hasAll(['leadId', 'createdOn'])
+        && mobile == request.resource.data.mobile;
+
+      // No client-side updates or deletes permitted.
+      allow update, delete: if false;
+    }
+
+    // ─── Default deny ────────────────────────────────────────────────────────
+    // All other paths are denied.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

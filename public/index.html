@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PuREPower Dealer Lead Router | PURE Energy</title>
+  <meta name="description"
+        content="PURE Energy PuREPower Dealer Lead Router — capture, assign, and manage solar storage leads across authorised dealers." />
+
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       HEADER / NAV
+  ═══════════════════════════════════════════════════════════════ -->
+  <header class="site-header" role="banner">
+    <div class="header-inner container">
+      <div class="brand">
+        <span class="brand-icon" aria-hidden="true">⚡</span>
+        <span class="brand-name">PURE<span class="brand-accent">Power</span></span>
+        <span class="brand-tagline">Lead Router</span>
+      </div>
+
+      <nav class="header-nav" aria-label="Main navigation">
+        <button id="nav-lead-form"  class="nav-btn active"  aria-current="page">Submit Lead</button>
+        <button id="nav-dashboard"  class="nav-btn"         aria-current="false">Dashboard</button>
+      </nav>
+
+      <div class="header-auth">
+        <!-- Shown when signed out -->
+        <button id="btn-open-login" class="btn btn-outline" hidden>Sign In</button>
+        <!-- Shown when signed in -->
+        <div id="user-info" class="user-info" hidden>
+          <span id="user-email" class="user-email"></span>
+          <button id="btn-sign-out" class="btn btn-ghost" aria-label="Sign out">Sign Out</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════════════════════ -->
+  <main id="main-content" class="container" role="main">
+
+    <!-- ─── LOGIN MODAL OVERLAY ───────────────────────────────── -->
+    <div id="login-modal" class="modal-overlay" role="dialog"
+         aria-modal="true" aria-labelledby="login-modal-title" hidden>
+      <div class="modal-card">
+        <button id="btn-close-login" class="modal-close" aria-label="Close login dialog">&times;</button>
+        <h2 id="login-modal-title" class="modal-title">
+          <span aria-hidden="true">🔒</span> Dashboard Sign In
+        </h2>
+        <p class="modal-subtitle">Admin access only. Contact your system administrator for credentials.</p>
+
+        <form id="login-form" novalidate aria-label="Sign in form">
+          <div class="form-group">
+            <label for="login-email" class="form-label">Email</label>
+            <input id="login-email" type="email" class="form-input"
+                   autocomplete="email" placeholder="admin@pureenergy.in"
+                   required aria-required="true" />
+          </div>
+          <div class="form-group">
+            <label for="login-password" class="form-label">Password</label>
+            <input id="login-password" type="password" class="form-input"
+                   autocomplete="current-password" placeholder="••••••••"
+                   required aria-required="true" />
+          </div>
+          <p id="login-error" class="field-error" role="alert" hidden></p>
+          <button id="btn-login" type="submit" class="btn btn-primary btn-full">
+            <span class="btn-label">Sign In</span>
+            <span class="btn-spinner" hidden aria-hidden="true"></span>
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ─── LEAD FORM SECTION ──────────────────────────────────── -->
+    <section id="section-lead-form" class="content-section" aria-labelledby="form-section-title">
+      <div class="section-hero">
+        <h1 id="form-section-title" class="hero-title">Submit a New Lead</h1>
+        <p class="hero-subtitle">
+          Fill in the customer's details below. Leads are automatically assigned
+          to the nearest authorised PuREPower dealer based on pincode.
+        </p>
+      </div>
+
+      <div class="card form-card">
+        <form id="lead-form" novalidate aria-label="New lead submission form">
+
+          <!-- Name -->
+          <div class="form-group">
+            <label for="field-name" class="form-label">
+              Customer Name <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input id="field-name" name="name" type="text" class="form-input"
+                   placeholder="e.g. Ravi Kumar"
+                   autocomplete="name"
+                   required aria-required="true"
+                   aria-describedby="err-name" />
+            <p id="err-name" class="field-error" role="alert" hidden></p>
+          </div>
+
+          <!-- Mobile -->
+          <div class="form-group">
+            <label for="field-mobile" class="form-label">
+              Mobile Number <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input id="field-mobile" name="mobile" type="tel" class="form-input"
+                   placeholder="10-digit mobile number"
+                   autocomplete="tel"
+                   inputmode="numeric"
+                   required aria-required="true"
+                   aria-describedby="err-mobile" />
+            <p id="err-mobile" class="field-error" role="alert" hidden></p>
+          </div>
+
+          <!-- Pincode -->
+          <div class="form-group">
+            <label for="field-pincode" class="form-label">
+              Pincode <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <input id="field-pincode" name="pincode" type="text" class="form-input"
+                   placeholder="6-digit pincode"
+                   inputmode="numeric"
+                   maxlength="6"
+                   required aria-required="true"
+                   aria-describedby="err-pincode dealer-preview" />
+            <p id="err-pincode" class="field-error" role="alert" hidden></p>
+            <!-- Live dealer preview -->
+            <p id="dealer-preview" class="dealer-preview" aria-live="polite" hidden></p>
+          </div>
+
+          <!-- Product -->
+          <div class="form-group">
+            <label for="field-product" class="form-label">
+              Product <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <select id="field-product" name="product" class="form-input form-select"
+                    required aria-required="true"
+                    aria-describedby="err-product">
+              <option value="">— Select a product —</option>
+              <option value="PuREPower Home 3kWh">PuREPower Home 3kWh</option>
+              <option value="PuREPower Home 5kWh">PuREPower Home 5kWh</option>
+              <option value="PuREPower Commercial 10kWh">PuREPower Commercial 10kWh</option>
+            </select>
+            <p id="err-product" class="field-error" role="alert" hidden></p>
+          </div>
+
+          <!-- Source -->
+          <div class="form-group">
+            <label for="field-source" class="form-label">
+              Lead Source <span class="required-mark" aria-hidden="true">*</span>
+            </label>
+            <select id="field-source" name="source" class="form-input form-select"
+                    required aria-required="true"
+                    aria-describedby="err-source">
+              <option value="">— Select source —</option>
+              <option value="Website">Website</option>
+              <option value="AI Voice Call">AI Voice Call</option>
+              <option value="WhatsApp">WhatsApp</option>
+              <option value="Dealer Walk-in">Dealer Walk-in</option>
+              <option value="Voice Agent">Voice Agent</option>
+            </select>
+            <p id="err-source" class="field-error" role="alert" hidden></p>
+          </div>
+
+          <!-- Submit -->
+          <div id="form-global-error" class="alert alert-error" role="alert" hidden></div>
+          <div id="form-success"      class="alert alert-success" role="status" hidden></div>
+
+          <button id="btn-submit-lead" type="submit" class="btn btn-primary btn-full">
+            <span class="btn-label">Submit Lead</span>
+            <span class="btn-spinner" hidden aria-hidden="true"></span>
+          </button>
+
+          <p class="form-note">
+            <span aria-hidden="true">ℹ️</span>
+            Fields marked <span class="required-mark">*</span> are required.
+            Mobile numbers are checked for duplicates before saving.
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ─── DASHBOARD SECTION ──────────────────────────────────── -->
+    <section id="section-dashboard" class="content-section" hidden
+             aria-labelledby="dashboard-section-title">
+
+      <!-- Auth guard message when user is not signed in -->
+      <div id="dashboard-auth-guard" class="auth-guard card" hidden>
+        <span class="auth-guard-icon" aria-hidden="true">🔒</span>
+        <h2>Dashboard Access Restricted</h2>
+        <p>Please sign in with an authorised admin account to view the dashboard.</p>
+        <button id="btn-auth-guard-login" class="btn btn-primary">Sign In</button>
+      </div>
+
+      <!-- Dashboard content (shown only when authenticated) -->
+      <div id="dashboard-content" hidden>
+        <div class="section-hero">
+          <h1 id="dashboard-section-title" class="hero-title">Lead Dashboard</h1>
+          <p class="hero-subtitle">Real-time view of all submitted leads and their dealer assignments.</p>
+        </div>
+
+        <!-- Stats strip -->
+        <div class="stats-strip">
+          <div class="stat-card">
+            <span class="stat-number" id="stat-total">—</span>
+            <span class="stat-desc">Total Leads</span>
+          </div>
+          <div class="stat-card stat-card-wide">
+            <span class="stat-card-label">By Dealer</span>
+            <div id="stat-by-dealer" class="stat-list"></div>
+          </div>
+          <div class="stat-card stat-card-wide">
+            <span class="stat-card-label">By Status</span>
+            <div id="stat-by-status" class="stat-list"></div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card filters-card">
+          <div class="filters-row">
+            <div class="filter-group">
+              <label for="filter-dealer" class="filter-label">Dealer</label>
+              <select id="filter-dealer" class="form-input form-select filter-select"
+                      aria-label="Filter by dealer">
+                <option value="">All Dealers</option>
+              </select>
+            </div>
+            <div class="filter-group">
+              <label for="filter-status" class="filter-label">Status</label>
+              <select id="filter-status" class="form-input form-select filter-select"
+                      aria-label="Filter by status">
+                <option value="">All Statuses</option>
+              </select>
+            </div>
+            <div class="filter-group filter-search">
+              <label for="search-input" class="filter-label">Search</label>
+              <input id="search-input" type="search" class="form-input"
+                     placeholder="Name, mobile, pincode…"
+                     aria-label="Search leads" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Error banner -->
+        <div id="dashboard-error" class="alert alert-error" role="alert" hidden></div>
+
+        <!-- Leads table -->
+        <div class="card table-card">
+          <div class="table-wrapper" role="region" aria-label="Leads table" tabindex="0">
+            <table class="leads-table" aria-live="polite">
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Mobile</th>
+                  <th scope="col">Pincode</th>
+                  <th scope="col">Product</th>
+                  <th scope="col">Source</th>
+                  <th scope="col">Dealer</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Created</th>
+                </tr>
+              </thead>
+              <tbody id="leads-table-body">
+                <tr>
+                  <td colspan="8" class="empty-state">
+                    <span class="spinner" aria-label="Loading leads…"></span>
+                    Loading leads…
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────────── -->
+  <footer class="site-footer" role="contentinfo">
+    <div class="container">
+      <p>&copy; 2026 PURE Energy. PuREPower Dealer Lead Router v1.0</p>
+    </div>
+  </footer>
+
+  <!-- ─── APP ENTRY POINT ───────────────────────────────────────── -->
+  <script type="module">
+    /**
+     * app.js (inline)
+     * ---------------
+     * Bootstraps the application.
+     * Wires up auth state changes, page navigation, and section visibility.
+     */
+
+    import { signIn, signOutUser, onUserChange, getCurrentUser }
+      from "./src/auth.js";
+    import { createLead, DuplicateMobileError }
+      from "./src/leads.js";
+    import { validateLeadForm }
+      from "./src/validation.js";
+    import { assignDealer }
+      from "./src/dealers.js";
+    import { initDashboard, teardownDashboard }
+      from "./src/dashboard.js";
+
+    // ─── Navigation ─────────────────────────────────────────────────────────
+
+    const sectionForm      = document.getElementById("section-lead-form");
+    const sectionDashboard = document.getElementById("section-dashboard");
+    const navLeadForm      = document.getElementById("nav-lead-form");
+    const navDashboard     = document.getElementById("nav-dashboard");
+
+    function showSection(name) {
+      const isForm = name === "form";
+      sectionForm.hidden      = !isForm;
+      sectionDashboard.hidden = isForm;
+      navLeadForm.classList.toggle("active", isForm);
+      navLeadForm.setAttribute("aria-current", isForm ? "page" : "false");
+      navDashboard.classList.toggle("active", !isForm);
+      navDashboard.setAttribute("aria-current", !isForm ? "page" : "false");
+    }
+
+    navLeadForm.addEventListener("click",  () => showSection("form"));
+    navDashboard.addEventListener("click", () => showSection("dashboard"));
+
+    // ─── Auth state watcher ──────────────────────────────────────────────────
+
+    const btnOpenLogin     = document.getElementById("btn-open-login");
+    const userInfoEl       = document.getElementById("user-info");
+    const userEmailEl      = document.getElementById("user-email");
+    const btnSignOut       = document.getElementById("btn-sign-out");
+    const dashboardContent = document.getElementById("dashboard-content");
+    const dashboardGuard   = document.getElementById("dashboard-auth-guard");
+
+    let dashboardInitialized = false;
+
+    onUserChange((user) => {
+      // Header controls
+      btnOpenLogin.hidden = !!user;
+      userInfoEl.hidden   = !user;
+      if (user) userEmailEl.textContent = user.email;
+
+      // Dashboard guard
+      const isAdmin = user && user.email; // Full rule enforcement is in Firestore rules
+      dashboardContent.hidden = !isAdmin;
+      dashboardGuard.hidden   = !!isAdmin;
+
+      if (isAdmin && !dashboardInitialized) {
+        initDashboard();
+        dashboardInitialized = true;
+      } else if (!isAdmin && dashboardInitialized) {
+        teardownDashboard();
+        dashboardInitialized = false;
+      }
+    });
+
+    // ─── Login modal ─────────────────────────────────────────────────────────
+
+    const loginModal     = document.getElementById("login-modal");
+    const loginForm      = document.getElementById("login-form");
+    const loginError     = document.getElementById("login-error");
+    const btnLogin       = document.getElementById("btn-login");
+    const btnCloseLogin  = document.getElementById("btn-close-login");
+    const btnAuthGuard   = document.getElementById("btn-auth-guard-login");
+
+    function openLoginModal() {
+      loginModal.hidden = false;
+      document.getElementById("login-email").focus();
+    }
+    function closeLoginModal() {
+      loginModal.hidden = true;
+      loginError.hidden = true;
+      loginForm.reset();
+    }
+
+    btnOpenLogin.addEventListener("click",  openLoginModal);
+    btnCloseLogin.addEventListener("click", closeLoginModal);
+    btnAuthGuard.addEventListener("click",  () => { showSection("dashboard"); openLoginModal(); });
+
+    // Close modal on backdrop click
+    loginModal.addEventListener("click", (e) => {
+      if (e.target === loginModal) closeLoginModal();
+    });
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      loginError.hidden = true;
+
+      const email    = document.getElementById("login-email").value.trim();
+      const password = document.getElementById("login-password").value;
+
+      setButtonLoading(btnLogin, true);
+      try {
+        await signIn(email, password);
+        closeLoginModal();
+        showSection("dashboard");
+      } catch (err) {
+        loginError.textContent = friendlyAuthError(err.code);
+        loginError.hidden = false;
+      } finally {
+        setButtonLoading(btnLogin, false);
+      }
+    });
+
+    btnSignOut.addEventListener("click", async () => {
+      await signOutUser();
+      showSection("form");
+    });
+
+    // ─── Lead form ───────────────────────────────────────────────────────────
+
+    const leadForm       = document.getElementById("lead-form");
+    const btnSubmitLead  = document.getElementById("btn-submit-lead");
+    const formGlobalErr  = document.getElementById("form-global-error");
+    const formSuccess    = document.getElementById("form-success");
+    const pincodeInput   = document.getElementById("field-pincode");
+    const dealerPreview  = document.getElementById("dealer-preview");
+
+    // Live dealer preview as user types the pincode
+    pincodeInput.addEventListener("input", () => {
+      const val = pincodeInput.value.trim();
+      if (val.length === 6 && /^\d{6}$/.test(val)) {
+        const dealer = assignDealer(val);
+        dealerPreview.textContent = `📍 Will be assigned to: ${dealer}`;
+        dealerPreview.hidden = false;
+      } else {
+        dealerPreview.hidden = true;
+      }
+    });
+
+    leadForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      clearFormErrors();
+      formGlobalErr.hidden = true;
+      formSuccess.hidden   = true;
+
+      const raw = {
+        name:    document.getElementById("field-name").value,
+        mobile:  document.getElementById("field-mobile").value,
+        pincode: document.getElementById("field-pincode").value,
+        product: document.getElementById("field-product").value,
+        source:  document.getElementById("field-source").value
+      };
+
+      const result = validateLeadForm(raw);
+
+      if (!result.valid) {
+        showFormErrors(result.errors);
+        return;
+      }
+
+      setButtonLoading(btnSubmitLead, true);
+      try {
+        const docId = await createLead(result.cleaned);
+        const dealer = assignDealer(result.cleaned.pincode);
+        formSuccess.textContent =
+          `✅ Lead submitted successfully! Assigned to: ${dealer}. (Ref: ${docId})`;
+        formSuccess.hidden = false;
+        leadForm.reset();
+        dealerPreview.hidden = true;
+      } catch (err) {
+        if (err instanceof DuplicateMobileError) {
+          showFieldError("mobile", err.message);
+        } else if (err.code === "permission-denied") {
+          formGlobalErr.textContent =
+            "Submission failed: permission denied. Please sign in to submit a lead.";
+          formGlobalErr.hidden = false;
+        } else {
+          formGlobalErr.textContent = `Submission failed: ${err.message}`;
+          formGlobalErr.hidden = false;
+        }
+      } finally {
+        setButtonLoading(btnSubmitLead, false);
+      }
+    });
+
+    // ─── Form error helpers ──────────────────────────────────────────────────
+
+    function showFormErrors(errors) {
+      for (const [field, msg] of Object.entries(errors)) {
+        showFieldError(field, msg);
+      }
+      // Focus the first invalid field
+      const firstField = Object.keys(errors)[0];
+      const el = document.getElementById(`field-${firstField}`);
+      if (el) el.focus();
+    }
+
+    function showFieldError(field, msg) {
+      const errEl = document.getElementById(`err-${field}`);
+      const inp   = document.getElementById(`field-${field}`);
+      if (errEl) { errEl.textContent = msg; errEl.hidden = false; }
+      if (inp)   { inp.classList.add("input-error"); inp.setAttribute("aria-invalid", "true"); }
+    }
+
+    function clearFormErrors() {
+      document.querySelectorAll(".field-error").forEach(el => {
+        el.textContent = ""; el.hidden = true;
+      });
+      document.querySelectorAll(".form-input").forEach(el => {
+        el.classList.remove("input-error");
+        el.removeAttribute("aria-invalid");
+      });
+    }
+
+    // ─── Button loading state ────────────────────────────────────────────────
+
+    function setButtonLoading(btn, loading) {
+      const label   = btn.querySelector(".btn-label");
+      const spinner = btn.querySelector(".btn-spinner");
+      btn.disabled = loading;
+      if (label)   label.hidden   = loading;
+      if (spinner) spinner.hidden = !loading;
+    }
+
+    // ─── Auth error messages ─────────────────────────────────────────────────
+
+    function friendlyAuthError(code) {
+      const map = {
+        "auth/wrong-password":       "Incorrect password. Please try again.",
+        "auth/user-not-found":       "No account found with that email.",
+        "auth/invalid-email":        "Please enter a valid email address.",
+        "auth/too-many-requests":    "Too many failed attempts. Try again later.",
+        "auth/invalid-credential":   "Invalid credentials. Check email and password."
+      };
+      return map[code] ?? "Sign in failed. Please try again.";
+    }
+  </script>
+
+</body>
+</html>

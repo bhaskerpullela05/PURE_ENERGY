@@ -1,0 +1,68 @@
+# Dependencies
+node_modules/
+.npm/
+
+# Python virtual environments
+venv/
+.venv/
+env/
+.env/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Environment files (may contain secrets)
+.env
+.env.local
+.env.*.local
+
+# Firebase service account and private keys
+serviceAccountKey.json
+*serviceAccount*.json
+*service-account*.json
+*.key.json
+
+# Firebase cache and local state
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+database-debug.log
+
+# OS generated
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editor directories
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.bak
+
+# Do NOT ignore these required files:
+# README.md
+# submission.json
+# reports/reconciliation.csv
+# firestore.rules
+# AI_LOG.md
+# NOTE.md
+# data/dealers.csv
+# data/legacy_leads.csv

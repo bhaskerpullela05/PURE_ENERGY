@@ -1,0 +1,9 @@
+dealer_id,dealer_name,city,pincode_prefixes,contact_email
+D01,Sri Sai Power Solutions,Hyderabad,500,d01@example.com
+D02,Kandi Energy Point,Sangareddy,502,d02@example.com
+D03,Warangal Green Systems,Warangal,506,d03@example.com
+D04,Karimnagar Solar Hub,Karimnagar,505,d04@example.com
+D05,Vizag Home Power,Visakhapatnam,530|531,d05@example.com
+D06,Krishna Energy Store,Vijayawada,520|521,d06@example.com
+D07,Guntur Battery World,Guntur,522,d07@example.com
+D08,Tirupati PowerHouse,Tirupati,517,d08@example.com
