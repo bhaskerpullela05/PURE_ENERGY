@@ -247,6 +247,25 @@ img { max-width: 100%; display: block; }
   flex: 1;
 }
 
+#section-lead-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#section-lead-form .section-hero {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-inline: auto;
+  margin-bottom: var(--space-8);
+}
+
+#section-lead-form .hero-title::after {
+  margin-inline: auto;
+}
+
 .section-hero {
   margin-bottom: var(--space-8);
 }
@@ -273,7 +292,14 @@ img { max-width: 100%; display: block; }
 }
 
 /* ─── 8. Form elements ────────────────────────────────────── */
-.form-card { max-width: 560px; }
+.form-card {
+  width: 100%;
+  max-width: 560px;
+  margin-inline: auto;
+  background: var(--clr-surface-2);
+  border: 1px solid var(--clr-border);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
 
 .form-group { display: flex; flex-direction: column; gap: var(--space-2); margin-bottom: var(--space-5); }
 .form-group:last-child { margin-bottom: 0; }
@@ -734,4 +760,164 @@ img { max-width: 100%; display: block; }
   font-size: 0.85rem;
   color: var(--clr-text-muted);
   margin-bottom: var(--space-5);
+}
+
+/* ─── 23. Homepage Styles ─────────────────────────────────── */
+.brand {
+  cursor: pointer;
+  user-select: none;
+  transition: opacity var(--t-fast), transform var(--t-fast);
+}
+.brand:hover {
+  opacity: 0.92;
+  transform: scale(1.02);
+}
+
+.home-hero {
+  text-align: center;
+  max-width: 780px;
+  margin-inline: auto;
+  padding-block: var(--space-8) var(--space-12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.home-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: rgba(13, 148, 136, 0.12);
+  border: 1px solid rgba(13, 148, 136, 0.3);
+  color: var(--clr-primary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  margin-bottom: var(--space-5);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--clr-primary);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--clr-primary);
+}
+
+.home-hero-title {
+  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: var(--space-4);
+  color: var(--clr-text);
+}
+
+.brand-gradient {
+  background: linear-gradient(135deg, #10b981 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.home-hero-subtitle {
+  font-size: clamp(1rem, 1.8vw, 1.15rem);
+  line-height: 1.6;
+  color: var(--clr-text-muted);
+  max-width: 640px;
+  margin-bottom: var(--space-8);
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  justify-content: center;
+  margin-bottom: var(--space-4);
+}
+
+.btn-lg {
+  padding: var(--space-3) var(--space-6);
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+}
+
+.home-features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-6);
+  margin-bottom: var(--space-12);
+}
+
+.feature-card {
+  padding: var(--space-8) var(--space-6);
+  background: var(--clr-surface-2);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius-lg);
+  transition: transform var(--t-normal), border-color var(--t-normal);
+}
+.feature-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--clr-border-hover);
+}
+
+.feature-icon {
+  font-size: 2.2rem;
+  margin-bottom: var(--space-4);
+}
+
+.feature-card h3 {
+  font-size: 1.15rem;
+  margin-bottom: var(--space-2);
+  color: var(--clr-text);
+}
+
+.feature-card p {
+  font-size: 0.88rem;
+  color: var(--clr-text-muted);
+  line-height: 1.5;
+}
+
+.dealer-network-banner {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-8);
+}
+
+.network-header {
+  margin-bottom: var(--space-5);
+  text-align: center;
+}
+.network-tag {
+  font-size: 0.75rem;
+  color: var(--clr-accent);
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+.network-header h3 {
+  font-size: 1.3rem;
+  color: var(--clr-text);
+  margin-top: 4px;
+}
+
+.network-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.network-pill {
+  background: var(--clr-surface-3);
+  border: 1px solid var(--clr-border);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 0.82rem;
+  color: var(--clr-text);
+  font-weight: 500;
 }
