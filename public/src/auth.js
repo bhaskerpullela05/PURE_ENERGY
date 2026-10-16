@@ -1,14 +1,12 @@
 /**
  * auth.js
  * -------
- * Handles Firebase Authentication UI and state management.
+ * Handles Firebase Authentication UI and session state management.
  *
- * Security & Roles:
- * - Admin credentials can be provisioned in Firebase Console:
- *   Authentication -> Users -> Add user.
- * - For local preview and offline testing (before connecting Firebase keys),
- *   a built-in demo admin login is supported:
- *   Email: admin@pureenergy.in / Password: Admin@123
+ * Authentication Flow:
+ * - Direct integration with Firebase Authentication SDK.
+ * - Visitors log in using Email and Password configured in Firebase Console.
+ * - Credentials are authenticated directly against Firebase Auth backend servers.
  */
 
 import {
@@ -26,65 +24,52 @@ const listeners = [];
 
 function notifyListeners(user) {
   for (const cb of listeners) {
-    try { cb(user); } catch (e) { console.error("Auth listener error:", e); }
+    try {
+      cb(user);
+    } catch (e) {
+      console.error("Auth listener error:", e);
+    }
   }
 }
 
-// Subscribe to Firebase Auth state if auth object is initialized
-try {
-  onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    notifyListeners(user);
-  });
-} catch (e) {
-  console.warn("Firebase Auth listener initialized in offline mode:", e);
-}
+// Subscribe to Firebase Auth state
+onAuthStateChanged(auth, (user) => {
+  currentUser = user;
+  notifyListeners(user);
+});
 
 // ─── Public API ──────────────────────────────────────────────────────────────
 
+/**
+ * Returns the currently signed-in Firebase user, or null if signed out.
+ * @returns {import("firebase/auth").User|null}
+ */
 export function getCurrentUser() {
   return currentUser;
 }
 
+/**
+ * Registers a callback invoked whenever the user logs in or out.
+ * @param {function(import("firebase/auth").User|null): void} callback
+ */
 export function onUserChange(callback) {
   listeners.push(callback);
 }
 
 /**
- * Signs in with email and password.
- * Connects to Firebase Auth if configured; gracefully supports Demo Admin login
- * if running offline or with default placeholder keys.
+ * Authenticates user credentials with Firebase Authentication backend.
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<import("firebase/auth").UserCredential>}
  */
 export async function signIn(email, password) {
-  try {
-    return await signInWithEmailAndPassword(auth, email, password);
-  } catch (err) {
-    // If running with placeholder config or offline, allow Demo Admin login
-    const isPlaceholder = err.code === "auth/api-key-not-valid" ||
-                          err.code === "auth/invalid-api-key" ||
-                          err.message?.includes("API key");
-    const isDemoAccount = email.trim().toLowerCase() === "admin@pureenergy.in";
-
-    if (isPlaceholder || isDemoAccount) {
-      const demoUser = {
-        email: email.trim() || "admin@pureenergy.in",
-        displayName: "Admin (Review Mode)",
-        uid: "demo-admin-uid"
-      };
-      currentUser = demoUser;
-      notifyListeners(demoUser);
-      return { user: demoUser };
-    }
-    throw err;
-  }
+  return await signInWithEmailAndPassword(auth, email.trim(), password);
 }
 
+/**
+ * Signs out the current user session from Firebase.
+ * @returns {Promise<void>}
+ */
 export async function signOutUser() {
-  currentUser = null;
-  notifyListeners(null);
-  try {
-    await signOut(auth);
-  } catch (_e) {
-    // Offline ignore
-  }
+  return await signOut(auth);
 }

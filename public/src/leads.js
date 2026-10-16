@@ -119,63 +119,41 @@ export async function createLead(cleaned) {
  * @param {string} status - One of: New, Contacted, Converted, Lost.
  * @returns {Promise<void>}
  */
-// ─── Local Preview Sample Leads (used if Firebase is not yet connected) ────────
-let localLeads = [
-  { id: "9848022338", leadId: "L1001", name: "Ananya Sharma", mobile: "9848022338", pincode: "502285", product: "PuREPower Home 5kWh", source: "Website", dealer: "Kandi Energy Point", status: "New", createdOn: { toDate: () => new Date("2026-03-01T10:00:00Z") } },
-  { id: "9876543210", leadId: "L1002", name: "Vikram Reddy", mobile: "9876543210", pincode: "500081", product: "PuREPower Pro 10kWh", source: "AI Voice Call", dealer: "Sri Sai Power Solutions", status: "Contacted", createdOn: { toDate: () => new Date("2026-03-02T11:30:00Z") } },
-  { id: "9988776655", leadId: "L1003", name: "Suresh Babu", mobile: "9988776655", pincode: "530016", product: "PuREPower Home 5kWh", source: "WhatsApp", dealer: "Vizag Home Power", status: "Converted", createdOn: { toDate: () => new Date("2026-03-03T09:15:00Z") } },
-  { id: "9848022431", leadId: "L1004", name: "Pooja Hegde", mobile: "9848022431", pincode: "500034", product: "PuREPower Pro 10kWh", source: "Dealer Walk-in", dealer: "Sri Sai Power Solutions", status: "Lost", createdOn: { toDate: () => new Date("2026-03-04T14:20:00Z") } },
-  { id: "9876501234", leadId: "L1005", name: "Ramesh Naidu", mobile: "9876501234", pincode: "520001", product: "PuREPower Home 5kWh", source: "Voice Agent", dealer: "Krishna Energy Store", status: "New", createdOn: { toDate: () => new Date("2026-03-05T16:45:00Z") } }
-];
-
-let localSubscriber = null;
-
 export async function updateLeadStatus(docId, status) {
   const VALID = ["New", "Contacted", "Converted", "Lost"];
   if (!VALID.includes(status)) {
     throw new Error(`Invalid status: ${status}`);
   }
-  try {
-    const docRef = doc(db, "leads", docId);
-    await updateDoc(docRef, {
-      status,
-      updatedOn: serverTimestamp()
-    });
-  } catch (err) {
-    // If running in local preview mode
-    const lead = localLeads.find(l => l.id === docId || l.leadId === docId);
-    if (lead) {
-      lead.status = status;
-      if (localSubscriber) localSubscriber([...localLeads]);
-    }
-  }
+  const docRef = doc(db, "leads", docId);
+  await updateDoc(docRef, {
+    status,
+    updatedOn: serverTimestamp()
+  });
 }
 
+/**
+ * Fetches all leads once (for the initial dashboard load).
+ * Ordered by createdOn descending (newest first).
+ *
+ * @returns {Promise<Array<Object>>} Array of lead data objects with `id` field.
+ */
 export async function fetchAllLeads() {
-  try {
-    const q = query(leadsCol, orderBy("createdOn", "desc"));
-    const snap = await getDocs(q);
-    return snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  } catch (_e) {
-    return localLeads;
-  }
+  const q = query(leadsCol, orderBy("createdOn", "desc"));
+  const snap = await getDocs(q);
+  return snap.docs.map(d => ({ id: d.id, ...d.data() }));
 }
 
+/**
+ * Subscribes to real-time lead updates.
+ * Calls the provided callback whenever the leads collection changes.
+ *
+ * @param {function} callback - Called with an array of lead objects.
+ * @returns {function} Unsubscribe function.
+ */
 export function subscribeToLeads(callback) {
-  try {
-    const q = query(leadsCol, orderBy("createdOn", "desc"));
-    return onSnapshot(q, (snap) => {
-      const leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      callback(leads);
-    }, (err) => {
-      console.warn("Firestore not connected, falling back to local preview data:", err.message);
-      localSubscriber = callback;
-      callback(localLeads);
-    });
-  } catch (err) {
-    console.warn("Firestore offline, using local preview leads:", err.message);
-    localSubscriber = callback;
-    callback(localLeads);
-    return () => {};
-  }
+  const q = query(leadsCol, orderBy("createdOn", "desc"));
+  return onSnapshot(q, (snap) => {
+    const leads = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    callback(leads);
+  });
 }

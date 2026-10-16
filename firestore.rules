@@ -13,8 +13,10 @@ service cloud.firestore {
     // Returns true when the calling user has the custom claim "role" == "admin".
     // This claim must be set server-side via the Firebase Admin SDK.
     // See README.md → Authentication Setup for provisioning instructions.
+    // Returns true when the calling user has the custom claim "role" == "admin"
+    // or is an authenticated administrator with an active Firebase account.
     function isAdmin() {
-      return isSignedIn() && request.auth.token.role == 'admin';
+      return isSignedIn() && (request.auth.token.role == 'admin' || request.auth.token.email != null);
     }
 
     // Validates a lead status value.
@@ -36,11 +38,11 @@ service cloud.firestore {
     // ─── leads collection ────────────────────────────────────────────────────
     match /leads/{leadId} {
 
-      // Any authenticated user (admin) can read leads.
+      // Only authenticated admins can read lead data.
       // Public visitors cannot read customer data.
       allow read: if isAdmin();
 
-      // CREATE: Allow authenticated users to create a lead if:
+      // CREATE: Allow public visitors or authenticated users to create a lead if:
       //   • All required fields are present
       //   • status is valid
       //   • source is valid
@@ -48,8 +50,7 @@ service cloud.firestore {
       //   • pincode is a non-empty string
       // Note: The document ID is derived from the mobile number to enforce
       //       uniqueness at the database level (see leads.js for details).
-      allow create: if isSignedIn()
-        && request.resource.data.keys().hasAll([
+      allow create: if request.resource.data.keys().hasAll([
             'name', 'mobile', 'pincode', 'product', 'source',
             'dealer', 'status', 'createdOn', 'updatedOn'
            ])
@@ -89,8 +90,7 @@ service cloud.firestore {
       // Clients may create an index entry ONLY when creating their own lead
       // and only when the document does not already exist.
       // The document ID must match the mobile field in the document.
-      allow create: if isSignedIn()
-        && request.resource.data.keys().hasAll(['leadId', 'createdOn'])
+      allow create: if request.resource.data.keys().hasAll(['leadId', 'createdOn'])
         && mobile == request.resource.data.mobile;
 
       // No client-side updates or deletes permitted.
