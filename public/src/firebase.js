@@ -3,25 +3,22 @@
  * -----------
  * Initialises the Firebase app and exports the core service objects.
  *
- * IMPORTANT: Replace the firebaseConfig object below with the real values
- * from your Firebase Console:
- *   Firebase Console → Project Settings → Your apps → SDK setup and config
+ * Firebase Hosting Integration:
+ * When deployed to Firebase Hosting, Firebase automatically serves
+ * `/__/firebase/init.json` containing your project's configuration.
+ * This module checks for that file dynamically.
  *
- * These values are NOT secret – they are the client-side identifiers that
- * Firebase uses to route SDK calls to the right project. Security is
- * enforced by Firestore Security Rules and Firebase Authentication, NOT
- * by keeping these values hidden.
- *
- * For local development you can also create a `public/src/firebase-config.js`
- * file that is listed in .gitignore and import from there.
+ * For local development or non-Firebase hosting:
+ * Replace the values in `firebaseConfig` below with your real project keys:
+ *   Firebase Console → Project Settings → General → Your apps → Web app
  */
 
-import { initializeApp }        from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore }         from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-import { getAuth }              from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore }  from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getAuth }       from "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js";
 
-// ─── Replace every value here with your real Firebase project config ─────────
-const firebaseConfig = {
+// ─── Default / Fallback Firebase configuration ────────────────────────────────
+let firebaseConfig = {
   apiKey:            "YOUR_API_KEY",
   authDomain:        "YOUR_PROJECT_ID.firebaseapp.com",
   projectId:         "YOUR_PROJECT_ID",
@@ -29,7 +26,22 @@ const firebaseConfig = {
   messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
   appId:             "YOUR_APP_ID"
 };
-// ─────────────────────────────────────────────────────────────────────────────
+
+// Automatic detection on Firebase Hosting:
+// If placeholder is detected, attempt to load live configuration from Firebase Hosting
+if (firebaseConfig.projectId === "YOUR_PROJECT_ID" && typeof window !== "undefined") {
+  try {
+    const res = await fetch("/__/firebase/init.json");
+    if (res.ok) {
+      const liveConfig = await res.json();
+      if (liveConfig && liveConfig.projectId) {
+        firebaseConfig = liveConfig;
+      }
+    }
+  } catch (_err) {
+    // Local development or non-hosting environment — fallback to static config
+  }
+}
 
 const app = initializeApp(firebaseConfig);
 

@@ -4,7 +4,10 @@
   "description": "PURE Energy Dealer Lead Router - MIS Assistant Assignment",
   "scripts": {
     "start": "firebase serve --only hosting",
-    "deploy": "firebase deploy --only hosting",
+    "serve": "firebase serve --only hosting",
+    "deploy": "firebase deploy",
+    "deploy:hosting": "firebase deploy --only hosting",
+    "deploy:firestore": "firebase deploy --only firestore",
     "test": "node tests/test_validation.js"
   },
   "devDependencies": {
