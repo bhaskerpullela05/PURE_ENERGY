@@ -22,14 +22,13 @@
   ═══════════════════════════════════════════════════════════════ -->
   <header class="site-header" role="banner">
     <div class="header-inner container">
-      <div class="brand" id="brand-logo" role="button" tabindex="0" title="Return to Homepage">
+      <div class="brand">
         <span class="brand-icon" aria-hidden="true">⚡</span>
         <span class="brand-name">PURE<span class="brand-accent">Power</span></span>
         <span class="brand-tagline">Lead Router</span>
       </div>
 
       <nav class="header-nav" aria-label="Main navigation">
-        <button id="nav-home"       class="nav-btn">Home</button>
         <button id="nav-lead-form"  class="nav-btn active"  aria-current="page">Submit Lead</button>
         <button id="nav-dashboard"  class="nav-btn"         aria-current="false">Dashboard</button>
       </nav>
@@ -82,68 +81,6 @@
         </form>
       </div>
     </div>
-
-    <!-- ─── HOMEPAGE SECTION ───────────────────────────────────── -->
-    <section id="section-home" class="content-section" hidden aria-labelledby="home-title">
-      <div class="home-hero">
-        <div class="home-badge">
-          <span class="badge-dot"></span> Authorised PuREPower Network
-        </div>
-        <h1 id="home-title" class="home-hero-title">
-          Smart Lead Router for <span class="brand-gradient">Solar Storage</span>
-        </h1>
-        <p class="home-hero-subtitle">
-          Capturing customer inquiries from website, AI voice calls, WhatsApp, and dealer walk-ins — 
-          automatically assigning leads to authorized regional dealers in real time.
-        </p>
-
-        <div class="home-actions">
-          <button id="home-btn-submit" class="btn btn-primary btn-lg">
-            ⚡ Submit a New Lead
-          </button>
-          <button id="home-btn-dashboard" class="btn btn-outline btn-lg">
-            📊 View Lead Dashboard
-          </button>
-        </div>
-      </div>
-
-      <!-- Feature Highlights -->
-      <div class="home-features">
-        <div class="feature-card card">
-          <div class="feature-icon">📍</div>
-          <h3>Pincode Dealer Routing</h3>
-          <p>Instant 3-digit prefix matching to 8 regional dealer hubs with automatic In-house Sales fallback.</p>
-        </div>
-        <div class="feature-card card">
-          <div class="feature-icon">🛡️</div>
-          <h3>Atomic Duplicate Guard</h3>
-          <p>Unique mobile indexing and transactional checking prevent duplicate lead assignments at database level.</p>
-        </div>
-        <div class="feature-card card">
-          <div class="feature-icon">⚡</div>
-          <h3>Real-Time Cloud Firestore</h3>
-          <p>Instant live synchronization for status updates, dealer filtering, search, and conversion tracking.</p>
-        </div>
-      </div>
-
-      <!-- Dealer Network Strip -->
-      <div class="dealer-network-banner card">
-        <div class="network-header">
-          <span class="network-tag">REGIONAL COVERAGE</span>
-          <h3>Connected Dealer Network</h3>
-        </div>
-        <div class="network-badges">
-          <span class="network-pill">📍 Hyderabad (Sri Sai Power)</span>
-          <span class="network-pill">📍 Sangareddy / Kandi (Kandi Energy Point)</span>
-          <span class="network-pill">📍 Visakhapatnam (Vizag Home Power)</span>
-          <span class="network-pill">📍 Vijayawada (Krishna Energy Store)</span>
-          <span class="network-pill">📍 Guntur (Guntur Battery World)</span>
-          <span class="network-pill">📍 Warangal (Warangal Green Systems)</span>
-          <span class="network-pill">📍 Tirupati (Tirupati PowerHouse)</span>
-          <span class="network-pill">📍 Karimnagar (Karimnagar Solar Hub)</span>
-        </div>
-      </div>
-    </section>
 
     <!-- ─── LEAD FORM SECTION ──────────────────────────────────── -->
     <section id="section-lead-form" class="content-section" aria-labelledby="form-section-title">
@@ -378,51 +315,30 @@
 
     // ─── Navigation ─────────────────────────────────────────────────────────
 
-    const sectionHome      = document.getElementById("section-home");
     const sectionForm      = document.getElementById("section-lead-form");
     const sectionDashboard = document.getElementById("section-dashboard");
-    const navHome          = document.getElementById("nav-home");
     const navLeadForm      = document.getElementById("nav-lead-form");
     const navDashboard     = document.getElementById("nav-dashboard");
-    const brandLogo        = document.getElementById("brand-logo");
 
     function showSection(name) {
-      const isHome = name === "home";
       const isForm = name === "form";
-      const isDash = name === "dashboard";
 
-      sectionHome.hidden      = !isHome;
       sectionForm.hidden      = !isForm;
-      sectionDashboard.hidden = !isDash;
+      sectionDashboard.hidden = isForm;
 
-      sectionHome.style.display      = isHome ? "block" : "none";
       sectionForm.style.display      = isForm ? "flex" : "none";
-      sectionDashboard.style.display = isDash ? "block" : "none";
+      sectionDashboard.style.display = isForm ? "none" : "block";
 
-      navHome.classList.toggle("active", isHome);
-      navHome.setAttribute("aria-current", isHome ? "page" : "false");
       navLeadForm.classList.toggle("active", isForm);
       navLeadForm.setAttribute("aria-current", isForm ? "page" : "false");
-      navDashboard.classList.toggle("active", isDash);
-      navDashboard.setAttribute("aria-current", isDash ? "page" : "false");
+      navDashboard.classList.toggle("active", !isForm);
+      navDashboard.setAttribute("aria-current", !isForm ? "page" : "false");
 
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
 
-    brandLogo.addEventListener("click", () => showSection("home"));
-    brandLogo.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        showSection("home");
-      }
-    });
-
-    navHome.addEventListener("click", () => showSection("home"));
     navLeadForm.addEventListener("click", () => showSection("form"));
     navDashboard.addEventListener("click", () => showSection("dashboard"));
-
-    document.getElementById("home-btn-submit")?.addEventListener("click", () => showSection("form"));
-    document.getElementById("home-btn-dashboard")?.addEventListener("click", () => showSection("dashboard"));
 
     // ─── Auth state watcher ──────────────────────────────────────────────────
 
