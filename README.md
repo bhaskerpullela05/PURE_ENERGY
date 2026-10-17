@@ -1,4 +1,4 @@
-Kandi
+Kandi, Sangareddy (Telangana).
 
 # PuREPower Dealer Lead Router
 
