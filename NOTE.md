@@ -1,10 +1,5 @@
 # What I Would Build Next for PURE Energy Dealers
 
-> **Note to candidate**: Review, personalise, and adjust this draft in your own voice before submitting.
-> Aim for approximately 150 words.
-
----
-
 If I joined PURE Energy as an MIS Assistant, the next thing I would build is a **Dealer Performance Dashboard with Monthly Sales Targets**.
 
 **The Problem**
